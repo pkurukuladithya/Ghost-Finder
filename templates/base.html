@@ -3,20 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}People Counter{% endblock %}</title>
-    <!-- TailwindCSS CDN -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Manrope', 'ui-sans-serif', 'system-ui'] },
+                    colors: {
+                        charcoal: '#0f172a',
+                    },
+                }
+            }
+        }
+    </script>
 </head>
-<body class="bg-gray-100 min-h-screen">
-    <nav class="bg-gray-800 text-white p-4 flex justify-between">
-        <div class="font-bold text-lg">YOLO People Counter</div>
-        <div class="space-x-4">
-            <a href="{{ url_for('index') }}" class="hover:underline">Live</a>
-            <a href="{{ url_for('history') }}" class="hover:underline">History</a>
-        </div>
-    </nav>
+<body class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 text-slate-900 font-sans">
+    <div class="relative">
+        <div class="absolute inset-0 opacity-30" style="background: radial-gradient(circle at 20% 20%, rgba(52,211,153,0.25), transparent 30%), radial-gradient(circle at 80% 10%, rgba(251,191,36,0.25), transparent 25%), radial-gradient(circle at 70% 80%, rgba(59,130,246,0.2), transparent 30%);"></div>
+        <div class="relative">
+            <nav class="max-w-6xl mx-auto px-6 pt-6 pb-4 flex items-center justify-between text-white">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-500/90 flex items-center justify-center text-xl font-extrabold shadow-lg shadow-emerald-500/30">P</div>
+                    <div>
+                        <div class="text-lg font-bold">Presence Counter</div>
+                        <div class="text-xs text-slate-200/80">YOLO + Flask live monitor</div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4 text-sm">
+                    <a href="{{ url_for('index') }}" class="px-3 py-2 rounded-lg hover:bg-white/10 transition">Live</a>
+                    <a href="{{ url_for('history') }}" class="px-3 py-2 rounded-lg hover:bg-white/10 transition">History</a>
+                </div>
+            </nav>
 
-    <main class="container mx-auto p-4">
-        {% block content %}{% endblock %}
-    </main>
+            <header class="max-w-6xl mx-auto px-6 pb-6 text-white">
+                <h1 class="text-3xl md:text-4xl font-extrabold leading-tight">Real-time lobby presence tracker</h1>
+                <p class="text-slate-200 mt-2 max-w-2xl">Detects how many people are currently inside the camera frame and records changes over time.</p>
+            </header>
+
+            <main class="max-w-6xl mx-auto px-6 pb-10">
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+    </div>
 </body>
 </html>

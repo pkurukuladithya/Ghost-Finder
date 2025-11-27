@@ -3,32 +3,59 @@
 {% block title %}Live Counter{% endblock %}
 
 {% block content %}
-<div class="grid md:grid-cols-2 gap-4">
-    <div class="bg-white shadow rounded-lg p-4 flex flex-col items-center">
-        <h2 class="text-xl font-semibold mb-4">Live Camera</h2>
-        <img src="{{ url_for('video_feed') }}" alt="Video feed"
-             class="rounded-lg border border-gray-300 max-w-full">
-        <p class="text-gray-500 mt-2 text-sm">
-            Boxes and counts are drawn directly on the video.
-        </p>
+<div class="grid lg:grid-cols-3 gap-8">
+    <div class="lg:col-span-2">
+        <div class="bg-white/80 backdrop-blur shadow-xl rounded-2xl p-6 border border-slate-100">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <p class="text-sm uppercase tracking-wide text-slate-500">Live Feed</p>
+                    <h2 class="text-2xl font-semibold text-slate-900">Lobby Camera</h2>
+                </div>
+                <span class="px-3 py-1 text-xs rounded-full bg-emerald-100 text-emerald-700">Running</span>
+            </div>
+            <div class="rounded-xl overflow-hidden border border-slate-200 shadow-sm">
+                <img src="{{ url_for('video_feed') }}" alt="Video feed" class="w-full h-full object-cover">
+            </div>
+            <p class="text-sm text-slate-500 mt-2">
+                Real-time detections with bounding boxes and the current lobby headcount.
+            </p>
+        </div>
     </div>
 
-    <div class="bg-white shadow rounded-lg p-4">
-        <h2 class="text-xl font-semibold mb-4">Current Stats</h2>
-        <div class="space-y-4">
-            <div class="flex justify-between items-center">
-                <span class="text-lg">Total IN:</span>
-                <span class="text-2xl font-bold text-green-600" id="total_in">{{ total_in }}</span>
+    <div class="space-y-6">
+        <div class="bg-white/90 backdrop-blur shadow-xl rounded-2xl p-6 border border-slate-100">
+            <p class="text-sm uppercase tracking-wide text-slate-500">Live Count</p>
+            <div class="flex items-baseline gap-3 mt-3">
+                <span class="text-5xl font-black text-emerald-600" id="lobby_count">{{ lobby_count }}</span>
+                <span class="text-slate-500">people in view</span>
             </div>
-            <div class="flex justify-between items-center">
-                <span class="text-lg">Total OUT:</span>
-                <span class="text-2xl font-bold text-red-600" id="total_out">{{ total_out }}</span>
-            </div>
-            <div class="flex justify-between items-center border-t pt-4 mt-4">
-                <span class="text-lg">In Lobby Now:</span>
-                <span class="text-3xl font-extrabold text-blue-600" id="lobby_count">{{ lobby_count }}</span>
-            </div>
+            <p class="text-sm text-slate-500 mt-2">
+                Updates every few seconds while the stream is active.
+            </p>
+        </div>
+
+        <div class="bg-gradient-to-br from-amber-50 to-emerald-50 shadow-xl rounded-2xl p-6 border border-amber-100">
+            <h3 class="text-lg font-semibold text-slate-900 mb-2">Tips for best accuracy</h3>
+            <ul class="space-y-2 text-sm text-slate-700">
+                <li>• Keep the scene well lit and the camera steady.</li>
+                <li>• Aim the camera so people are fully visible (head to torso).</li>
+                <li>• If detections miss, lower `CONF_THRESHOLD` to 0.35–0.45.</li>
+            </ul>
         </div>
     </div>
 </div>
+
+<script>
+    async function refreshStats() {
+        try {
+            const res = await fetch("/api/stats");
+            if (!res.ok) return;
+            const data = await res.json();
+            document.getElementById("lobby_count").textContent = data.lobby_count;
+        } catch (err) {
+            console.error("Failed to refresh stats", err);
+        }
+    }
+    setInterval(refreshStats, 4000);
+</script>
 {% endblock %}
